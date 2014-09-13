@@ -15,4 +15,10 @@ public interface FiniteIntSet {
     boolean isEmptyHuh();
     boolean member(int elt);
     FiniteIntSet add(int elt);
+    FiniteIntSet remove(int elt);
+    FiniteIntSet union(FiniteIntSet u);
+    FiniteIntSet inter(FiniteIntSet u);
+    FiniteIntSet diff(FiniteIntSet u);
+    boolean equal(FiniteIntSet u);
+    boolean subset(FiniteIntSet u);
 }
