@@ -80,9 +80,9 @@ public class Branch implements FiniteIntSet {
 
     public FiniteIntSet diff(FiniteIntSet u) {
         if(u.member(data)) {
-            return left.diff(u.remove(data)).union(right.diff(u.remove(data)));
+            return left.union(right).diff(u.remove(data));
         }     
-        return right.diff(u).union(left.diff(u));
+        return left.union(right).diff(u);
     }
 
     public boolean equal(FiniteIntSet u) {

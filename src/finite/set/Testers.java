@@ -72,7 +72,7 @@ public class Testers {
         System.out.println("inter BB and BRY U BRX " + bb.inter(bry.union(brx)).cardinality());
         System.out.println();
         
-        //diff WRONG, BUT THINKING IT THROUGH
+        //diff 
         System.out.println("Cardinality of the diff between bryy (2) and bb (2 5 8) " + bryy.diff(bb).cardinality());
         System.out.println("Cardinality of the diff between bb (2 5 8) and bryy (2) " + bb.diff(bryy).cardinality());
 
