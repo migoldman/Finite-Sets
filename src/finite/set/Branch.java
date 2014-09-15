@@ -80,7 +80,7 @@ public class Branch implements FiniteIntSet {
 
     public FiniteIntSet diff(FiniteIntSet u) {
         if(u.member(data)) {
-            return left.union(right.union(u.remove(data)));
+            return left.diff(u.remove(data)).union(right.diff(u.remove(data)));
         }     
         return right.diff(u).union(left.diff(u));
     }
@@ -99,65 +99,4 @@ public class Branch implements FiniteIntSet {
         }
     }
 
-    public static void main(String[] args) {
-        //The Law of Demeter
-        //You can only talk to your friends, not your friends' friends
-
-        //mt = empty finiteintset (aka a Leaf)
-        //brx = a branch containing one element
-        //bry = a branch containing one element (different than br)
-        //brrand = a branch containing one random element
-        //bb = a branch containing three elements
-        //bbrand = a branch containing three random elements
-        Leaf mt = new Leaf();
-        Leaf mt2 = new Leaf();
-        Branch brx = new Branch(new Leaf(), 3, new Leaf());
-        Branch bry = new Branch(new Leaf(), 5, new Leaf());
-        Branch brz = new Branch(new Leaf(), 5, new Leaf());
-        Branch bb = new Branch(new Branch(new Leaf(), 2, new Leaf()), 5, new Branch(new Leaf(), 8, new Leaf()));
-   
-
-        //Cardinality
-        System.out.println("Cardinality of MT is " + mt.cardinality());
-        System.out.println("Cardinality of BB is " + bb.cardinality());
-        System.out.println("Cardinality of BRY is " + brx.cardinality());
-        System.out.println();
-        //isEmptyHuh
-        System.out.println("is mt empty? " + mt.isEmptyHuh());
-        System.out.println("is brx empty? " + brx.isEmptyHuh());
-        System.out.println();
-        //member
-        System.out.println("is 5 in bb? " + bb.member(5));
-        System.out.println("is 4 in bb? " + bb.member(4));
-        System.out.println();
-        //add
-        System.out.println("is 5 now in empty? card should be 1 " + mt.add(5).cardinality());
-        System.out.println();
-        //remove
-        System.out.println("Cardinality of BRX U BRZ Remove 5 is " + brx.union(bry).remove(5).cardinality());
-        System.out.println("bb (2, 5, 8) remove 7 cardinality is " + bb.remove(7).cardinality());
-        System.out.println("bb (2, 5, 8) remove 8 cardinality is " + bb.remove(8).cardinality());
-        System.out.println();
-        //union
-        System.out.println("Cardinality of BRX U BRY is " + brx.union(bry).cardinality());
-        System.out.println("Cardinality of BB U BRY is " + bb.union(bry).cardinality());
-        System.out.println();
-        //inter
-        System.out.println("inter BRX and BRY " + brx.inter(bry).cardinality());
-        System.out.println("inter BRX and BRY " + brx.inter(bry).cardinality());
-        System.out.println();
-        //diff
-        System.out.println("Cardinality of the diff between bry and bb (should be 2) " + bb.diff(bry).cardinality());
-        System.out.println("Cardinality of the diff between bb and bry (should be 0) " + bry.diff(bb).cardinality());
-        System.out.println();
-        //equal
-        System.out.println("is empty equal to empty? " + mt.equal(mt2));
-        System.out.println("is empty equal to something? " + mt.equal(bb));   
-        System.out.println("Is brx(l,3,l) == bry(l,5,l) " + brx.equal(bry));
-        System.out.println("is bry(l,5,l) == brz(l,5,l) " + bry.equal(brz));
-        System.out.println();
-        //subset
-        System.out.println("is bb a subset of bry? no " + bb.subset(bry));
-        System.out.println("is bry a subset of bb? yes " + bry.subset(bb));
-    }
 }
