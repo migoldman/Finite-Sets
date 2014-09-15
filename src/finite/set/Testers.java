@@ -9,84 +9,59 @@ package finite.set;
  *
  * @author michaelgoldman
  */
+import java.util.Random;
+
 public class Testers {
 
+    static Random rand = new Random();
+    static FiniteIntSet rfisHelp = empty(); 
+    FiniteIntSet RFIS = RFIS(); //rfis = Random FiniteIntSet 
+    
+    
+    public boolean CoinFlip() {
+        return rand.nextInt()<.4; //that being said, slightly biased coinflip 
+    }
+    
+    public int randomInt(int min, int max) {
+        return rand.nextInt((max - min) + 1) + min;
+    }
+    
+    
+    public FiniteIntSet RFIS() {
+        int temp = randomInt(0, 20);       
+        for(int i = 0; i < 20; i++) {           
+            if(CoinFlip() == true && rfisHelp.member(temp) == false) {
+                rfisHelp.add(temp);
+                    i++;
+            }
+            else {
+                    i++;                      
+            }
+        }
+        return rfisHelp;
+    }
+    
     public static FiniteIntSet empty() {
         return new Leaf();
     }
     
     public static void main(String[] args) {
-
-
-        //brx = a branch containing one element
-        //bry = a branch containing one element (different than br)
-        //brrand = a branch containing one random element
-        //bb = a branch containing three elements
-        //bbrand = a branch containing three random elements
-        Leaf mt = new Leaf();
-        Leaf mt2 = new Leaf();
-        Branch brx = new Branch(new Leaf(), 3, new Leaf());
-        Branch bry = new Branch(new Leaf(), 5, new Leaf());
-        Branch bryy = new Branch(new Leaf(), 2, new Leaf());
-        Branch brz = new Branch(new Leaf(), 5, new Leaf());
-        Branch bb = new Branch(new Branch(new Leaf(), 2, new Leaf()), 5, new Branch(new Leaf(), 8, new Leaf()));
+        //MT = empty FiniteIntSet
+        //FS = FiniteIntSet
+        FiniteIntSet MT = empty();
+        FiniteIntSet FS = empty().add(5);
         
         //Cardinality
-        System.out.println("Cardinality of MT is " + mt.cardinality());
-        System.out.println("Cardinality of BB is " + bb.cardinality());
-        System.out.println("Cardinality of BRY is " + brx.cardinality());
-        System.out.println();
         
-        //isEmptyHuh
-        System.out.println("is mt empty? " + mt.isEmptyHuh());
-        System.out.println("is brx empty? " + brx.isEmptyHuh());
-        System.out.println();
-        
-        //member
-        System.out.println("is 5 in bb? " + bb.member(5));
-        System.out.println("is 4 in bb? " + bb.member(4));
-        System.out.println();
-        
-        //add
-        System.out.println("5 is now in empty? card should be 1 " + mt.add(5).cardinality());
-        System.out.println("4 is now in bb. Card should be 4 " + bb.add(4).cardinality());
-        System.out.println("5 is now in bb. Card should be 3 " + bb.add(5).cardinality());
-        System.out.println();
-        
-        //remove
-        System.out.println("Cardinality of BRX U BRZ Remove 5 is " + brx.union(bry).remove(5).cardinality());
-        System.out.println("bb (2, 5, 8) remove 7 cardinality is " + bb.remove(7).cardinality());
-        System.out.println("bb (2, 5, 8) remove 8 cardinality is " + bb.remove(8).cardinality());
-        System.out.println();
-        
-        //union
-            //x.union(y).subset(s) = x.subset(s) && y.subset(s)
-        System.out.println("Cardinality of BRX U BRY is " + brx.union(bry).cardinality());
-        System.out.println("Cardinality of BB U BRY is " + bb.union(bry).cardinality());
-        System.out.println();
-        
-        //inter
-        System.out.println("inter BRX and BRY " + brx.inter(bry).cardinality());
-        System.out.println("inter BB and BRY " + bb.inter(bry).cardinality());
-        System.out.println("inter BB and BRY U BRYY " + bb.inter(bry.union(bryy)).cardinality());
-        System.out.println("inter BB and BRY U BRX " + bb.inter(bry.union(brx)).cardinality());
-        System.out.println();
-        
-        //diff 
-        System.out.println("Cardinality of the diff between bryy (2) and bb (2 5 8) " + bryy.diff(bb).cardinality());
-        System.out.println("Cardinality of the diff between bb (2 5 8) and bryy (2) " + bb.diff(bryy).cardinality());
-
-        //equal correct if subset is correct
-        System.out.println("is empty equal to empty? " + mt.equal(mt2));
-        System.out.println("is empty equal to something? " + mt.equal(bb));
-        System.out.println("Is brx(l,3,l) == bry(l,5,l) " + brx.equal(bry));
-        System.out.println("is bry(l,5,l) == brz(l,5,l) " + bry.equal(brz));
-        System.out.println();
-
-        //subset believe this is correct
-        System.out.println("is bb a subset of bry? false - " + bb.subset(bry));
-        System.out.println("is bry a subset of bb? true - " + bry.subset(bb));
-        
+        //empty testers
+            //empty cardinality
+        System.out.println("MT cardinality - " + MT.cardinality());
+            //emtpy add
+        System.out.println("MT add 5, cardinlaity is - " + MT.add(5).cardinality());
+            //empty union
+        System.out.println("MT union FS, cardinality is - " + MT.union(FS).cardinality());
+        System.out.println("RFIS - " + RFIS.cardinality()); //error line 
+        //'Cannot reference a nonstatic to in a static. How should I go about fixing this?
         /*
         This function isn't quite operational yet. Soon though...
         

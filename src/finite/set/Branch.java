@@ -17,11 +17,8 @@ public class Branch implements FiniteIntSet {
     FiniteIntSet left;
     FiniteIntSet right;
     int data;
-    static Random rand = new Random();
 
-    public static int randomInt(int min, int max) {
-        return rand.nextInt((max - min) + 1) + min;
-    }
+    Branch() {};
 
     Branch(FiniteIntSet left, int data, FiniteIntSet right) {
         this.left = left;
@@ -59,7 +56,7 @@ public class Branch implements FiniteIntSet {
 
     public FiniteIntSet remove(int elt) {
         if (data == elt) {
-            return left.union(right).remove(elt);
+            return left.union(right);
         } else if (elt < data) {
             return new Branch(left.remove(elt), data, right);
         } else {
@@ -92,8 +89,6 @@ public class Branch implements FiniteIntSet {
     public boolean subset(FiniteIntSet u) {
         if (!u.member(data)) {
             return false;
-        } else if (left.isEmptyHuh() || right.isEmptyHuh()) {
-            return true;
         } else {
             return left.union(right).subset(u);
         }
