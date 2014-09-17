@@ -5,8 +5,6 @@
  */
 package finite.set;
 
-import java.util.Random;
-
 /**
  *
  * @author michaelgoldman
