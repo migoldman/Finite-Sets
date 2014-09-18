@@ -18,17 +18,14 @@ public class Testers {
     public static FiniteIntSet empty() {
         return new Leaf();
     }
-    
     //Flips a coin and returns true or false 
     public static boolean coinFlip() {
         return rand.nextInt(10) > 5; 
     }
-    
     //Creates a random int from from min to max
     public static int randomInt(int min, int max) {
         return rand.nextInt((max - min) + 1) + min;
     } 
-    
     //Creates a random FiniteIntSet (RFIS) with a length of maxlen, data ranging
         //from min to max
     //No duplicates
@@ -57,17 +54,41 @@ public class Testers {
         }
     }
             
-        //Cardinality and Add Principle
-            //t.add(elt).cardinality <==> t.cardinality() || t.cardinality()++
+        //Cardinality Add Principle
+            //holder.add(randInt).cardinality <==> holder.cardinality() (if t.member(elt))
+                // || holder.cardinality()+1 (if !(holder.member(elt))
         public static void cardAddP() {
             for(int i = 0; i < 50; i++) {
-                FiniteIntSet holder = RFIS(0, 15, 10);
+                FiniteIntSet holder = RFIS(0, 15, 20);
+                int randInt = randomInt(0, 15);
                 int temp = holder.cardinality();
-                if(holder.add(14).cardinality() == temp ||
-                        holder.cardinality() == temp++)   {                 
+                if(holder.member(randInt)) {
+                    if(holder.add(randInt).cardinality() == temp+1) {
+                        System.out.println("Something was added wrongly in cardAddP");
+                    }
                 }
                 else {
-                    System.out.println("Something went wrong with cardAddP");
+                    if(holder.add(randInt).cardinality() == temp) {
+                        System.out.println("Something wasn't added in cardAddP");
+                    }
+                }
+            }
+        }
+        
+        //Cardinality Remove Principle
+            //holder.remove(randInt).cardinality() <==> holder.cardinality() || 
+                //holder.cardinality()-1
+        public static void cardRemoveP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet holder = RFIS(0,15,20);
+                int temp = holder.cardinality();
+                int randInt = randomInt(0,15);
+                if(holder.remove(randInt).cardinality() == temp ||
+                        holder.remove(randInt).cardinality() == temp-1) { 
+                    //it works
+                }
+                else {
+                    System.out.println("Something went terribly wrong in cardRemoveP");
                 }
             }
         }
@@ -76,9 +97,9 @@ public class Testers {
             //holder.add(x).member(y) == true <==> 
                 //x = y || holder.member(y) = true;
         public static void addMemberP() {
-            for(int i = 0; i < 50; i++) {
+            for(int i = 0; i < 100; i++) {
                 int x = randomInt(0,15);
-                int y = randomInt(0, 15);
+                int y = randomInt(0,15);
                 FiniteIntSet holder = RFIS(0, 15, 10);
                 if(holder.add(x).member(y)) {
                     if(x == y || holder.member(y)) {    
@@ -90,12 +111,35 @@ public class Testers {
                     }
                 }
                 else {
-                    //x!=y and y isn't a member of t"
+                    if(x == y || holder.member(y)) {
+                        System.out.println("Something went wrong in addMemberP");
+                    }
+                }
+            }
+        }
+        //Member Remove Principle
+            //if holder.member(x) == true <==> holder.remove(x).cardinality() ==
+                //holder.cardinality()-1
+            //if holder.member(x) == false <==> holder.remove(x).cardinality() ==
+                //holder.cardinality()
+        public static void memberRemoveP() {
+            for(int i = 0; i < 50; i++) {
+                int x = randomInt(0,15);
+                FiniteIntSet holder = RFIS(0, 15, 10);
+                if(holder.member(x)) {
+                    if(holder.remove(x).cardinality() != holder.cardinality() - 1) {
+                        System.out.println("OH THE HUMANITY!!! memberRemoveP is bad!");
+                    }
+                }
+                else {
+                    if(holder.remove(x).cardinality() != holder.cardinality()) {
+                        System.out.println("memberRemoveP is BAD!");
+                    }
                 }
             }
         }
         
-        //Member Remove Principle
+        //Member union Principle
             //holder.union(x).member(y) == true <==> holder.member(y) = true ||
                 //x.member(y) = true
         public static void memberUnionP() {
@@ -180,8 +224,8 @@ public class Testers {
             //x.union(y) = x.inter(y) <==> x.equal(y) == true
         public static void equalInterUnionP() {
             for(int i = 0; i < 50; i++) {
-                FiniteIntSet x = RFIS(0,5,15);
-                FiniteIntSet y = RFIS(0,5,15);
+                FiniteIntSet x = RFIS(0,10,15);
+                FiniteIntSet y = RFIS(0,10,15);
                 if(x.union(y) == x.inter(y) && x.equal(y) == false) {
                     System.out.println("Something went wrong in equalInterUnionP");
                 }
@@ -205,6 +249,20 @@ public class Testers {
                 }
             }
         }
+        
+        public static void diffEmptyHuhP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet x = RFIS(0,10,15);
+                FiniteIntSet y = RFIS(10,20,15);
+                FiniteIntSet z = x.union(y);
+                if(!(z.diff(x).isEmptyHuh())) {
+                    System.out.println("OH NO! diffEmptyHuhP IS WRONG!");
+                }
+                if(x.diff(y).isEmptyHuh() || y.diff(x).isEmptyHuh()) {
+                    System.out.println("Something went wrong in diffEmptyHuhP");
+                }
+            }
+        }
     
     public static void main(String[] args) {
         //VARIABLES
@@ -215,6 +273,7 @@ public class Testers {
         FiniteIntSet FS4 = FS3.add(7);
         FiniteIntSet FS5 = FS4.add(6);
         FiniteIntSet FS6 = FS5.add(8);
+        //add in a duplicate to test it as well
         FiniteIntSet FS7 = FS6.add(5);
         
         
@@ -233,32 +292,36 @@ public class Testers {
         System.out.println("MT add 5, cardinlaity is - " + MT.add(5).cardinality());
             //empty union
         System.out.println("MT union FS4, cardinality is - " + MT.union(FS4).cardinality());
+        System.out.println("The cardinality of a random FiniteIntSet is " + RFIS(0, 100,
+                randomInt(0, 100)).cardinality());
                
-        //tests for empty and duplicates. This tests if add works and also
-            //remove with member
+            //tests for empty and duplicates. This tests if add works and also
+                //remove with member
         RFIStester();
-        //This tests for add with cardinality
+            //This tests for add with cardinality
         cardAddP();
-        //This tests for member with add (since already proven previously)
+            //This tests for remove with cardinality
+        cardRemoveP();
+            //This tests for member with add (since already proven previously)
         addMemberP();
-        //This tests union with member (also vice verse, but since member has
-            //been proven, it can be seen as Union test)
+            //This tests union with member (also vice verse, but since member has
+                //been proven, it can be seen as Union test)
         memberUnionP();
-        //This tests if empty actually creates an empty FiniteIntSet
-            //also tests empty against non-empty sets
+            //This tests if empty actually creates an empty FiniteIntSet
+                //also tests empty against non-empty sets
         emptyEmptyHuhP();
-        //This tests if diff works by using member
+            //This tests if diff works by using member
         diffMemberP();
-        //This tests is subset works by using union
+            //This tests is subset works by using union
         subsetUnionP();
-        //this checks if equal works by using a combo of inter and union
-            //equal can also be explained since if we know subset works
-            //equal must work since it is just using the subset method twice
+            //this checks if equal works by using a combo of inter and union
+                //equal can also be explained since if we know subset works
+                //equal must work since it is just using the subset method twice
         equalInterUnionP();
-        //This checks if inter works by using equal against it
+            //This checks if inter works by using equal against it
         interEqualP();
-        
-        
+            //This checks isEmptyHuh against diff
+        diffEmptyHuhP();
         
         /*     
         This function isn't quite operational yet. Soon though...
