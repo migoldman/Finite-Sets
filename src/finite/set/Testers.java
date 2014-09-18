@@ -41,15 +41,18 @@ public class Testers {
     
    
     //Test for RFIS for duplicates and other anomalies
+        //checks remove against member
     public static void RFIStester() {
         for(int i =0; i < 50; i++) {
             FiniteIntSet holder = RFIS(0,10,30);
             //it goes from 0...10, so 11 total ints
             if(holder.cardinality() > 11 || holder.cardinality() < 0) {
-                System.out.println("FAILURE");
+                System.out.println("FAILURE in length");
             }
+            //Removes the first 7 in the FiniteIntSet, then checks if there are
+            //any other 7s. Prints failure if true.
             else if(holder.remove(7).member(7)) {
-                System.out.println("FAILURE");
+                System.out.println("FAILURE in duplicate");
             }
         }
     }
@@ -78,10 +81,8 @@ public class Testers {
                 int y = randomInt(0, 15);
                 FiniteIntSet holder = RFIS(0, 15, 10);
                 if(holder.add(x).member(y)) {
-                    if(x == y) {
+                    if(x == y || holder.member(y)) {    
                         //x = y
-                    }
-                    else if(holder.member(y)) {    
                         //y is already a member
                     }
                     else {
@@ -103,12 +104,15 @@ public class Testers {
                 FiniteIntSet x = RFIS(0, 15, 10);
                 int y = randomInt(0, 15);
                 if(holder.union(x).member(y) == true) {
-                    if(holder.member(y) == true) {                 
-                    }
-                    else if (x.member(y) == true) {                       
+                    if(holder.member(y) == true || x.member(y) == true) {                       
                     }
                     else {
                         System.out.println("Error with memberUnionP");
+                    }
+                }
+                else {
+                    if(holder.member(y) == true || x.member(y) == true) {
+                        System.out.println("Error with memberUnionP not unioned");
                     }
                 }
             }
@@ -130,6 +134,74 @@ public class Testers {
                     if(holder.isEmptyHuh() == true) {
                         System.out.println("Error in emptyEmptyHuhP holder");
                     }
+                }
+            }
+        }
+        
+        //Diff Member Principle
+            //holder.diff(x).member(y) == true <==> x.member(y) == true &&
+                //holder.member(y) == false
+            //holder.diff(x).member(y) == false <==> x.member(y) == false ||
+                //holder.member(y) == true
+        public static void diffMemberP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet holder = RFIS(0, 20, 20);
+                FiniteIntSet x = RFIS(0, 20, 20);
+                int y = randomInt(0,20);
+                if(holder.diff(x).member(y) == true) {
+                    if(x.member(y) == false || holder.member(y) == true)
+                    {
+                        System.out.println("diffMemberP is wrong");
+                    }
+                }
+                else if(x.member(y) == false || holder.member(y) == true) {
+                }
+                else { 
+                    System.out.println("Something went wrong in diffMemberP");
+                }
+            }
+        }
+        
+        //Subset Union Principle
+            //x.union(y).subset(z) == true <==> x.subset(z) == true && 
+            //y.subset(z) == true
+        public static void subsetUnionP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet x = RFIS(0,5,10);
+                FiniteIntSet y = RFIS(6,10,10);
+                FiniteIntSet z = RFIS(0,10,20);
+                if(x.union(y).subset(z) != x.subset(z) && y.subset(z)) {
+                    System.out.println("Something went wrong in subsetUnionP");
+                }
+            }
+        }
+        
+        //Equal Inter Union Principle
+            //x.union(y) = x.inter(y) <==> x.equal(y) == true
+        public static void equalInterUnionP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet x = RFIS(0,5,15);
+                FiniteIntSet y = RFIS(0,5,15);
+                if(x.union(y) == x.inter(y) && x.equal(y) == false) {
+                    System.out.println("Something went wrong in equalInterUnionP");
+                }
+                if(!(x.union(y).equal(x.inter(y))) && x.equal(y) == true) {
+                    System.out.println("Something went wrong in later part of"
+                            + "equalInterUnionP");
+                }
+            }
+        }
+
+        //Inter Equal Principle
+            //z = x.union(y) 
+            //x.inter(z) = x && y.inter(z) = y
+        public static void interEqualP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet x = RFIS(0,10,15);
+                FiniteIntSet y = RFIS(0,10,15);
+                FiniteIntSet z = x.union(y);
+                if(x.inter(z).equal(x) != true || y.inter(y).equal(y) !=true) {
+                    System.out.println("Something went wrong in interEqualP");
                 }
             }
         }
@@ -161,14 +233,31 @@ public class Testers {
         System.out.println("MT add 5, cardinlaity is - " + MT.add(5).cardinality());
             //empty union
         System.out.println("MT union FS4, cardinality is - " + MT.union(FS4).cardinality());
-       
-        System.out.println(RFIS(0 ,10,30).cardinality());
-        
+               
+        //tests for empty and duplicates. This tests if add works and also
+            //remove with member
         RFIStester();
+        //This tests for add with cardinality
         cardAddP();
+        //This tests for member with add (since already proven previously)
         addMemberP();
+        //This tests union with member (also vice verse, but since member has
+            //been proven, it can be seen as Union test)
         memberUnionP();
+        //This tests if empty actually creates an empty FiniteIntSet
+            //also tests empty against non-empty sets
         emptyEmptyHuhP();
+        //This tests if diff works by using member
+        diffMemberP();
+        //This tests is subset works by using union
+        subsetUnionP();
+        //this checks if equal works by using a combo of inter and union
+            //equal can also be explained since if we know subset works
+            //equal must work since it is just using the subset method twice
+        equalInterUnionP();
+        //This checks if inter works by using equal against it
+        interEqualP();
+        
         
         
         /*     
@@ -185,8 +274,6 @@ public class Testers {
                 remove(/boot/);
         }       
         */
-        
-        //test is lessthan root
     }
 
 }
