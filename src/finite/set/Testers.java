@@ -244,7 +244,7 @@ public class Testers {
                 FiniteIntSet x = RFIS(0,10,15);
                 FiniteIntSet y = RFIS(0,10,15);
                 FiniteIntSet z = x.union(y);
-                if(x.inter(z).equal(x) != true || y.inter(y).equal(y) !=true) {
+                if(x.inter(z).equal(x) != true || y.inter(z).equal(y) !=true) {
                     System.out.println("Something went wrong in interEqualP");
                 }
             }
