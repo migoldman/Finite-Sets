@@ -170,6 +170,7 @@ public class Testers {
                 FiniteIntSet holder = RFIS(0, 15, 10);
                 FiniteIntSet MT = empty();
                 if(coinFlip()) {
+                    //you don't need the coinflip, buy why not have some gambling fun
                     if(MT.isEmptyHuh() == false) {
                         System.out.println("Error in emptyEmptyHuhP MT");
                     }
