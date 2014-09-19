@@ -18,10 +18,7 @@ public class Testers {
     public static FiniteIntSet empty() {
         return new Leaf();
     }
-    //Flips a coin and returns true or false 
-    public static boolean coinFlip() {
-        return rand.nextInt(10) > 5; 
-    }
+
     //Creates a random int from from min to max
     public static int randomInt(int min, int max) {
         return rand.nextInt((max - min) + 1) + min;
@@ -62,18 +59,17 @@ public class Testers {
                 FiniteIntSet holder = RFIS(0, 15, 20);
                 int randInt = randomInt(0, 15);
                 int temp = holder.cardinality();
-                if(holder.member(randInt)) {
-                    if(holder.add(randInt).cardinality() == temp+1) {
-                        System.out.println("Something was added wrongly in cardAddP");
-                    }
+                if(holder.add(randInt).cardinality() == temp+1)
+                {
+                }
+                else if(holder.add(randInt).cardinality() == temp) {
                 }
                 else {
-                    if(holder.add(randInt).cardinality() == temp) {
-                        System.out.println("Something wasn't added in cardAddP");
-                    }
+                    System.out.println("Something went wrong in cardAddP");
                 }
             }
         }
+        
         
         //Cardinality Remove Principle
             //holder.remove(randInt).cardinality() <==> holder.cardinality() || 
@@ -102,17 +98,19 @@ public class Testers {
                 int y = randomInt(0,15);
                 FiniteIntSet holder = RFIS(0, 15, 10);
                 if(holder.add(x).member(y)) {
-                    if(x == y || holder.member(y)) {    
-                        //x = y
-                        //y is already a member
+                    if(x == y) {    
+                        //System.out.println("x was added correctly and y = x");
+                    }
+                    else if(holder.member(y)) {
+                        //System.out.println("y was already a member of holder");
                     }
                     else {
-                        System.out.println("Something went wrong with addMemberP");
+                        System.out.println("Something went wrong with addMemberP error 1");
                     }
                 }
                 else {
                     if(x == y || holder.member(y)) {
-                        System.out.println("Something went wrong in addMemberP");
+                        System.out.println("Something went wrong in addMemberP error 2");
                     }
                 }
             }
@@ -128,7 +126,7 @@ public class Testers {
                 FiniteIntSet holder = RFIS(0, 15, 10);
                 if(holder.member(x)) {
                     if(holder.remove(x).cardinality() != holder.cardinality() - 1) {
-                        System.out.println("OH THE HUMANITY!!! memberRemoveP is bad!");
+                        System.out.println("memberRemoveP is bad! error 1");
                     }
                 }
                 else {
@@ -157,27 +155,6 @@ public class Testers {
                 else {
                     if(holder.member(y) == true || x.member(y) == true) {
                         System.out.println("Error with memberUnionP not unioned");
-                    }
-                }
-            }
-        }
-   
-        //Empty IsEmptyHuh Principle
-            //holder.isEmptyHuh() == true <==> holder = Leaf
-            //holder.isEmptyHuh() == false <==> holder = Branch
-        public static void emptyEmptyHuhP() {
-            for(int i = 0; i < 50; i++) {
-                FiniteIntSet holder = RFIS(0, 15, 10);
-                FiniteIntSet MT = empty();
-                if(coinFlip()) {
-                    //you don't need the coinflip, buy why not have some gambling fun
-                    if(MT.isEmptyHuh() == false) {
-                        System.out.println("Error in emptyEmptyHuhP MT");
-                    }
-                }
-                else {
-                    if(holder.isEmptyHuh() == true) {
-                        System.out.println("Error in emptyEmptyHuhP holder");
                     }
                 }
             }
@@ -251,6 +228,10 @@ public class Testers {
             }
         }
         
+        //Diff isEmptyHuh Principle
+            //z = x.union(y)
+            //z.diff(x).isEmptyHuh() == true
+            //x.diff(y).isEmptyHuH() == y.diff(x).isEmptyHuh() == false
         public static void diffEmptyHuhP() {
             for(int i = 0; i < 50; i++) {
                 FiniteIntSet x = RFIS(0,10,15);
@@ -264,6 +245,20 @@ public class Testers {
                 }
             }
         }
+        
+        //Empty IsEmptyHuh Principle
+            //holder.isEmptyHuh() == true <==> holder = Leaf
+            //holder.isEmptyHuh() == false <==> holder = Branch
+        public static void emptyEmptyHuhP() {
+            for(int i = 0; i < 50; i++) {
+                FiniteIntSet holder = RFIS(0, 15, 10);
+                FiniteIntSet MT = empty();
+                    //you don't need the coinflip, buy why not have some gambling fun
+                    if(MT.isEmptyHuh() == false || holder.isEmptyHuh() == true) {
+                        System.out.println("Error in emptyEmptyHuhP");
+                    }
+                }
+            }
     
     public static void main(String[] args) {
         //VARIABLES
@@ -288,11 +283,12 @@ public class Testers {
         System.out.println(6 + " should be " + FS6.cardinality());
         System.out.println(6 + " should be " + FS7.cardinality());        
             //empty cardinality
-        System.out.println("MT cardinality - " + MT.cardinality());
+        System.out.println("MT cardinality - " + empty().cardinality());
             //emtpy add
-        System.out.println("MT add 5, cardinlaity is - " + MT.add(5).cardinality());
+        System.out.println("MT add one int, cardinlaity is - " + MT.add(randomInt(0,100)).cardinality());
             //empty union
         System.out.println("MT union FS4, cardinality is - " + MT.union(FS4).cardinality());
+        System.out.println("RFIS union FS6, cardinality is - " + RFIS(0,100,7).union(FS6).cardinality());
         System.out.println("The cardinality of a random FiniteIntSet is " + RFIS(0, 100,
                 randomInt(0, 100)).cardinality());
                
